@@ -51,6 +51,9 @@ export default function TodoContainer(props: ITodoContainerProps) {
       done: false,
     },
   ]);
+  const [text, setText] = React.useState<string>("");
+
+  const [edit, setEdit] = React.useState<boolean>(true);
 
   return (
     <StyledOuterContainer>
@@ -58,10 +61,24 @@ export default function TodoContainer(props: ITodoContainerProps) {
         <StyledHeader>
           <h1>To Do List</h1>
           <h3>React With TypeScript</h3>
-          <TodoInput todos={todos} setTodos={setTodos} />
+          <TodoInput
+            todos={todos}
+            setTodos={setTodos}
+            text={text}
+            setText={setText}
+            edit={edit}
+            setEdit={setEdit}
+          />
         </StyledHeader>
 
-        <TodoList todos={todos} setTodos={setTodos} />
+        <TodoList
+          todos={todos}
+          setTodos={setTodos}
+          text={text}
+          setText={setText}
+          edit={edit}
+          setEdit={setEdit}
+        />
       </StyledInnerContainter>
     </StyledOuterContainer>
   );

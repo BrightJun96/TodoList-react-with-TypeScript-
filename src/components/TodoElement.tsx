@@ -4,23 +4,44 @@ import { TodoArrayType } from "./TodoContainer";
 import styled, { css } from "styled-components";
 import oc from "open-color";
 
+export interface ITodoElementProps {
+  todo: TodoType;
+  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
+  todos: TodoArrayType;
+  text: string;
+  setText: Dispatch<SetStateAction<string>>;
+  edit: boolean;
+  setEdit: Dispatch<SetStateAction<boolean>>;
+}
+
 const StyledElement = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
+  border-bottom: 1px solid ${oc.gray[6]};
+  height: 60px;
+
   h1 {
     flex: 1;
     text-align: left;
     padding-left: 1rem;
   }
+`;
 
-  border-bottom: 1px solid ${oc.gray[6]};
+interface TextProps {
+  complete?: boolean;
+}
+const StyledText = styled.h1`
+  flex: 1;
+  text-align: left;
+  padding-left: 1rem;
+  text-decoration: ${(props: TextProps) =>
+    props.complete ? "line-through" : "none"};
 `;
 
 const StyledButtonBox = styled.div`
   display: flex;
   height: 100%;
-  padding-right: 1rem;
 
   button {
     font-size: 1rem;
@@ -36,16 +57,14 @@ const StyledButtonBox = styled.div`
   }
 `;
 
-export interface ITodoElementProps {
-  todo: TodoType;
-  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
-  todos: TodoArrayType;
-}
-
 export default function TodoElement({
   todo,
   setTodos,
   todos,
+  text,
+  setText,
+  edit,
+  setEdit,
 }: ITodoElementProps) {
   // changeDone
   const onChangeDone: React.MouseEventHandler<HTMLButtonElement> = () => {
@@ -69,21 +88,20 @@ export default function TodoElement({
 
   // editTodo
 
-  const onEditTodo: React.MouseEventHandler<HTMLButtonElement> = () => {};
+  const onEditTodo: React.MouseEventHandler<HTMLButtonElement> = () => {
+    if (text === "") return;
+
+    const changeTextTodos = todos.map((each) =>
+      each.id === todo.id ? { ...each, text: text } : each
+    );
+    setTodos(changeTextTodos);
+    setEdit(!edit);
+    setText("");
+  };
 
   return (
     <StyledElement>
-      {todo.done ? (
-        <h1
-          style={{
-            textDecoration: "line-through",
-          }}
-        >
-          {todo.text}
-        </h1>
-      ) : (
-        <h1>{todo.text}</h1>
-      )}
+      <StyledText complete={todo.done}>{todo.text}</StyledText>
       {todo.done ? (
         <StyledButtonBox>
           <button onClick={onFilterTodo}>삭제</button>

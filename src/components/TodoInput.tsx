@@ -4,6 +4,15 @@ import oc from "open-color";
 import { v4 as uuid4 } from "uuid";
 import styled from "styled-components";
 
+export interface ITodoInputProps {
+  todos: TodoArrayType;
+  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
+  text: string;
+  setText: Dispatch<SetStateAction<string>>;
+  edit: boolean;
+  setEdit: Dispatch<SetStateAction<boolean>>;
+}
+
 const StyledInputContainer = styled.div`
   width: 100%;
 
@@ -36,36 +45,38 @@ const StyledInputContainer = styled.div`
   }
 `;
 
-export interface ITodoInputProps {
-  todos: TodoArrayType;
-  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
-}
-
-export default function TodoInput({ todos, setTodos }: ITodoInputProps) {
-  const [todoText, setTodoText] = useState<string>("");
+export default function TodoInput({
+  todos,
+  setTodos,
+  text,
+  setText,
+  edit,
+  setEdit,
+}: ITodoInputProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
-    if (todoText === "") return;
+    if (text === "") return;
 
     const uniqueId = uuid4();
     console.log(uniqueId);
 
     const newTodo = todos.concat({
       id: uniqueId,
-      text: todoText,
+      text: text,
       done: false,
     });
 
     setTodos(newTodo);
-    setTodoText("");
+    setText("");
+
+    inputRef.current?.focus();
   };
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
-    setTodoText(e.target.value);
-
-  const inputRef = useRef<HTMLInputElement>(null);
+    setText(e.target.value);
 
   return (
     <StyledInputContainer>
@@ -74,11 +85,12 @@ export default function TodoInput({ todos, setTodos }: ITodoInputProps) {
         <input
           type="text"
           name="todo-text"
-          value={todoText}
+          value={text}
           onChange={onChange}
           placeholder="할 일을 입력하세요..."
           ref={inputRef}
         />
+
         <button>추가</button>
       </form>
     </StyledInputContainer>
