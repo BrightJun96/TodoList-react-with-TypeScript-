@@ -1,14 +1,32 @@
-import * as React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import TodoElement from "./TodoElement";
+
 import { TodoArrayType } from "./TodoContainer";
 
+import styled from "styled-components";
+
+const StyledList = styled.div`
+  min-height: 300px;
+  width: 100%;
+`;
+
 export interface IAppProps {
-  todos: TodoArrayType | null | undefined;
+  todos: TodoArrayType;
+  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
 }
-export default function TodoList({ todos }: IAppProps) {
+
+export default function TodoList({ todos, setTodos }: IAppProps) {
   return (
-    <div>
-      {todos && todos.map((todo) => <TodoElement todo={todo} key={todo.id} />)}
-    </div>
+    <StyledList>
+      {todos &&
+        todos.map((todo) => (
+          <TodoElement
+            todo={todo}
+            todos={todos}
+            setTodos={setTodos}
+            key={todo.id}
+          />
+        ))}
+    </StyledList>
   );
 }
