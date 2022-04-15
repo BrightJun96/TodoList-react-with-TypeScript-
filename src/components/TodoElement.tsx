@@ -1,72 +1,27 @@
-import React, { Dispatch, SetStateAction, useRef } from "react";
-import { TodoType } from "./TodoContainer";
-import { TodoArrayType } from "./TodoContainer";
-import styled, { css } from "styled-components";
-import oc from "open-color";
+import React, { Dispatch, SetStateAction, useContext } from "react";
+import {
+  StyledButtonBox,
+  StyledElement,
+  StyledText,
+} from "./styled/ElementStyling";
+import TextContext, { Text } from "./context/TextContext";
+import { TodoType } from "./types/@types";
 
 export interface ITodoElementProps {
   todo: TodoType;
-  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
-  todos: TodoArrayType;
-  text: string;
-  setText: Dispatch<SetStateAction<string>>;
-  edit: boolean;
-  setEdit: Dispatch<SetStateAction<boolean>>;
+  setTodos: Dispatch<SetStateAction<TodoType[]>>;
+  todos: TodoType[];
 }
-
-const StyledElement = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid ${oc.gray[6]};
-  height: 60px;
-
-  h1 {
-    flex: 1;
-    text-align: left;
-    padding-left: 1rem;
-  }
-`;
-
-interface TextProps {
-  complete?: boolean;
-}
-const StyledText = styled.h1`
-  flex: 1;
-  text-align: left;
-  padding-left: 1rem;
-  text-decoration: ${(props: TextProps) =>
-    props.complete ? "line-through" : "none"};
-`;
-
-const StyledButtonBox = styled.div`
-  display: flex;
-  height: 100%;
-
-  button {
-    font-size: 1rem;
-    background: ${oc.gray[5]};
-    border: none;
-    outline: none;
-    padding: 0.5rem;
-    border: 1px solid black;
-    cursor: pointer;
-    &:hover {
-      background: ${oc.gray[3]};
-    }
-  }
-`;
 
 export default function TodoElement({
   todo,
   setTodos,
   todos,
-  text,
-  setText,
-  edit,
-  setEdit,
 }: ITodoElementProps) {
-  // changeDone
+  const { text, setText } = useContext(TextContext) as Text;
+  const [edit, setEdit] = React.useState<boolean>(true);
+
+  /*changeDone*/
   const onChangeDone: React.MouseEventHandler<HTMLButtonElement> = () => {
     const changeDoneTodo = { ...todo, done: !todo.done };
 
@@ -79,15 +34,14 @@ export default function TodoElement({
     console.log(todo.done);
   };
 
-  // filterTodo
+  /* filter  */
   const onFilterTodo: React.MouseEventHandler<HTMLButtonElement> = () => {
     const filterTodos = todos.filter((each) => each.id !== todo.id);
 
     setTodos(filterTodos);
   };
 
-  // editTodo
-
+  /* edit */
   const onEditTodo: React.MouseEventHandler<HTMLButtonElement> = () => {
     if (text === "") return;
 
@@ -104,6 +58,7 @@ export default function TodoElement({
       <StyledText complete={todo.done}>{todo.text}</StyledText>
       {todo.done ? (
         <StyledButtonBox>
+          <button onClick={onChangeDone}>복구</button>
           <button onClick={onFilterTodo}>삭제</button>
         </StyledButtonBox>
       ) : (

@@ -1,58 +1,16 @@
-import React, { Dispatch, SetStateAction, useState, useRef } from "react";
-import { TodoArrayType } from "./TodoContainer";
-import oc from "open-color";
+import React, { useContext, useRef } from "react";
 import { v4 as uuid4 } from "uuid";
-import styled from "styled-components";
+import { StyledInputContainer } from "./styled/InputContainerStyling";
+import TextContext, { Text } from "./context/TextContext";
+import TodoContext from "./context/TodoContext";
+import { TodoState } from "./types/@types";
+export interface ITodoInputProps {}
 
-export interface ITodoInputProps {
-  todos: TodoArrayType;
-  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
-  text: string;
-  setText: Dispatch<SetStateAction<string>>;
-  edit: boolean;
-  setEdit: Dispatch<SetStateAction<boolean>>;
-}
+export default function TodoInput(props: ITodoInputProps) {
+  const { text, setText } = useContext(TextContext) as Text;
 
-const StyledInputContainer = styled.div`
-  width: 100%;
+  const { todos, setTodos } = useContext(TodoContext) as TodoState;
 
-  form {
-    display: flex;
-  }
-  input {
-    flex: 1;
-    border: none;
-    outline: none;
-    line-height: 1.3rem;
-    padding: 0.5rem;
-    font-size: 1.5rem;
-    padding-left: 1rem;
-  }
-
-  button {
-    border: none;
-    outline: none;
-    font-size: 1.3rem;
-    height: 100%;
-    padding: 1rem;
-
-    background: ${oc.gray[4]};
-
-    cursor: pointer;
-    &:hover {
-      background: ${oc.gray[5]};
-    }
-  }
-`;
-
-export default function TodoInput({
-  todos,
-  setTodos,
-  text,
-  setText,
-  edit,
-  setEdit,
-}: ITodoInputProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {

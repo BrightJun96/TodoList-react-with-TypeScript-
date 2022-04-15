@@ -1,32 +1,18 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { useContext } from "react";
 import TodoElement from "./TodoElement";
-
-import { TodoArrayType } from "./TodoContainer";
-
 import styled from "styled-components";
-
-export interface IAppProps {
-  todos: TodoArrayType;
-  setTodos: Dispatch<SetStateAction<TodoArrayType>>;
-  text: string;
-  setText: Dispatch<SetStateAction<string>>;
-  edit: boolean;
-  setEdit: Dispatch<SetStateAction<boolean>>;
-}
+import TodoContext from "./context/TodoContext";
+import { TodoState } from "./types/@types";
+export interface IAppProps {}
 
 const StyledList = styled.div`
   min-height: 300px;
   width: 100%;
 `;
 
-export default function TodoList({
-  todos,
-  setTodos,
-  text,
-  setText,
-  edit,
-  setEdit,
-}: IAppProps) {
+export default function TodoList(props: IAppProps) {
+  const { todos, setTodos } = useContext(TodoContext) as TodoState;
+
   return (
     <StyledList>
       {todos &&
@@ -36,10 +22,6 @@ export default function TodoList({
             todos={todos}
             setTodos={setTodos}
             key={todo.id}
-            text={text}
-            setText={setText}
-            edit={edit}
-            setEdit={setEdit}
           />
         ))}
     </StyledList>
