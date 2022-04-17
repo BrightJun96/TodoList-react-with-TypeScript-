@@ -6,6 +6,8 @@ export interface ITestProps {}
 export default function Test(props: ITestProps) {
   const { text, setText } = React.useContext(TextContext) as Text;
 
+  const [data, setData] = React.useState({ name: "ser", text: "Dsfsd" });
+
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
     setText(e.target.value);
 
